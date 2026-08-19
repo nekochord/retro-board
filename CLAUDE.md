@@ -27,14 +27,14 @@ tsconfig.node.json    vite.config.ts 用
 
 ```
 pnpm dev          # 啟動開發伺服器（前端 + Worker，跑在 workerd 上）
-pnpm build        # 型別檢查 + build 出 dist/client（靜態資產）與 dist/<worker>（部署用設定）
+pnpm build        # 產生 Env 型別 + 型別檢查 + build 出 dist/client（靜態資產）與 dist/<worker>（部署用設定）
 pnpm preview      # 用 build 產物本地預覽
 pnpm lint         # eslint
 pnpm deploy       # build 後執行 wrangler deploy
 pnpm cf-typegen   # 依 wrangler.jsonc 重新產生 worker-configuration.d.ts（Env 型別）
 ```
 
-改了 `wrangler.jsonc`（例如新增 binding）之後記得重跑 `pnpm cf-typegen`，`Env` 型別才會同步更新。`worker-configuration.d.ts` 是自動產生的檔案，已加進 `.gitignore`，不用手動維護或提交。
+`worker-configuration.d.ts`（`Env` 型別）是自動產生的檔案，已加進 `.gitignore`，不用手動維護或提交 —— `pnpm build` 本身就會先跑 `wrangler types` 重新產生它（CI／Cloudflare Builds 上也是全新 clone、沒有這個檔案，所以一定要放在 build 流程裡，不能只靠本機手動跑過）。改了 `wrangler.jsonc`（例如新增 binding）想在本機馬上看到型別更新，可以單獨跑 `pnpm cf-typegen`。
 
 ## 部署設定備註
 
